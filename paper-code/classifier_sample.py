@@ -5,11 +5,13 @@ process towards more realistic images.
 
 import argparse
 import os
+from matplotlib import pyplot as plt
 
 import numpy as np
 import torch as th
 import torch.distributed as dist
 import torch.nn.functional as F
+from PIL import Image
 
 from guided_diffusion import dist_util, logger
 from guided_diffusion.script_util import (
@@ -67,7 +69,8 @@ def main():
     logger.log("sampling...")
     all_images = []
     all_labels = []
-    while len(all_images) * args.batch_size < args.num_samples:
+    # while len(all_images) * args.batch_size < args.num_samples:
+    for i in range(10):
         model_kwargs = {}
         classes = th.randint(
             low=0, high=NUM_CLASSES, size=(args.batch_size,), device=dist_util.dev()
@@ -95,6 +98,13 @@ def main():
         dist.all_gather(gathered_labels, classes)
         all_labels.extend([labels.cpu().numpy() for labels in gathered_labels])
         logger.log(f"created {len(all_images) * args.batch_size} samples")
+
+        # tyler - print the sample for testing
+        im = Image.fromarray(all_images[i][0])
+        im.save("./images/image" + str(i) + ".jpeg")
+        plt.imshow(all_images[i][0], interpolation = "nearest")
+        plt.show()
+        print(all_images[i][0].shape)
 
     arr = np.concatenate(all_images, axis=0)
     arr = arr[: args.num_samples]

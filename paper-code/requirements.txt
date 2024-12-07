@@ -1,2 +1,6 @@
 blogfile
 mpi4py
+request
+tensorflow
+scipy
+tqdm
