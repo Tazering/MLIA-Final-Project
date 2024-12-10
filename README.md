@@ -17,7 +17,7 @@
 Used Dataset: SYSU-Shape Dataset
 Assume the dataset is saved in the root directory of the Github repository provided by OpenAI listed here: https://github.com/openai/improved-diffusion 
 
-For the 64x64 models, only motorbikes were used, which can be downloaded here: https://github.com/bearpaw/sysu-shape-dataset/tree/master/motorbike/images 
+For example, the 64x64 model use only motorbikes images, which can be downloaded here: https://github.com/bearpaw/sysu-shape-dataset/tree/master/motorbike/images 
 
 The location of where you stored the data is important for the   ``` - - data_dir flag, where - - data_dir /path/to/images ``` is sent to the training scripts. 
 
@@ -172,13 +172,35 @@ mpiexec -n 2 python ./image_train.py --data_dir ../dataset/sysu_airplanes/ $MODE
 
 ## Sampling
 
+```
+python ./image_sample.py --model_path checkpoints_and_results/diffusion_class_cond.pt $MODEL_FLAGS $DIFFUSION_FLAGS
+```
 
+## Classifier Guidance
 
+* Training
+  
+Set the hyperparameters: 
+```
+TRAIN_FLAGS="--iterations 700000 --anneal_lr True --batch_size 32 --lr 1e-4 --save_interval 500 --weight_decay 0.05"
+CLASSIFIER_FLAGS="--image_size 128 --classifier_attention_resolutions 32,16,8 --classifier_depth 2 --classifier_width 128 --classifier_pool attention --classifier_resblock_updown True --classifier_use_scale_shift_norm True --classifier_use_fp16 True"
+```
 
+After the flags are set, insert this terminal command: 
 
+```
+mpiexec -n 2 python ./classifier_train.py --data_dir ../dataset/sysu_airplanes/ $TRAIN_FLAGS $CLASSIFIER_FLAGS
+```
 
+* Sampling
 
+Run this terminal command 
 
+```
+mpiexec -n 2 python ./classifier_sample.py --model_path /path/to/model.pt --classifier_path path/to/classifier.pt $MODEL_FLAGS $CLASSIFIER_FLAGS $SAMPLE_FLAGS
+```
+
+# Evaluations
 
 
  
