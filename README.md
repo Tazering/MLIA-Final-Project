@@ -19,11 +19,11 @@ Assume the dataset is saved in the root directory of the Github repository provi
 
 For the 64x64 models, only motorbikes were used, which can be downloaded here: https://github.com/bearpaw/sysu-shape-dataset/tree/master/motorbike/images 
 
-The location of where you stored the data is important for the   - - data_dir flag, where - - data_dir /path/to/images is sent to the training scripts. 
+The location of where you stored the data is important for the   ``` - - data_dir flag, where - - data_dir /path/to/images ``` is sent to the training scripts. 
 
 # Setting up
-Set up the OPENAI_LOGDIR environment variable, where the logging directory has the logs and saved models. To do this, the following command is needed: 
-export OPENAI_LOGDIR=/path/to/location/of/training/logs/folder
+Set up the ``` OPENAI_LOGDIR``` environment variable, where the logging directory has the logs and saved models. To do this, the following command is needed: 
+``` export OPENAI_LOGDIR=/path/to/location/of/training/logs/folder```
 
 
 # Diffusion Model
@@ -60,7 +60,7 @@ Once the hyperparameters are set, you can run the terminal command:
 ```
 mpiexec -n 2 python ./image_train.py --data_dir ../dataset/sysu_dataset_diffusion/ $MODEL_FLAGS $DIFFUSION_FLAGS $TRAIN_FLAGS --resume_checkpoint ./checkpoints_and_results/ema_checkpoint_2.pt
 ```
-# Sampling
+## Sampling
 
 * 64x64 Model
   
@@ -133,13 +133,12 @@ python classifier_sample.py $MODEL_FLAGS --classifier_path our_models/64x64_clas
 $SAMPLE_FLAGS $MODEL_FLAGS $CLASSIFIER_FLAGS
 ```
 
-*128x128 Model
+* 128x128 Model
 
 Set the hyperparameters: 
 
 ```
 ## Needs to match MODEL_FLAGS of diffusion model
-##MODEL_FLAGS="--attention_resolutions 32,16,8 --class_cond True --image_size 128 --learn_sigma True --num_channels 128 --num_heads 4 --num_res_blocks 2 --resblock_updown True --use_fp16 True --use_scale_shift_norm True"
 CLASSIFIER_FLAGS="--image_size 128 --classifier_attention_resolutions 32,16,8 --classifier_depth 2 --classifier_width 128 --classifier_pool attention --classifier_resblock_updown True --classifier_use_scale_shift_norm True --classifier_scale 1.0 --classifier_use_fp16 True"
 SAMPLE_FLAGS="--batch_size 4 --num_samples 25 --timestep_respacing ddim25 --use_ddim True"
 ```
@@ -152,6 +151,27 @@ mpiexec -n N python scripts/classifier_sample.py \
     --classifier_path path/to/classifier.pt \
     $MODEL_FLAGS $CLASSIFIER_FLAGS $SAMPLE_FLAGS
 ```
+
+# LSUN
+
+## Training
+
+Set the hyperparameters: 
+
+```
+MODEL_FLAGS="--attention_resolutions 32,16,8 --class_cond True --image_size 128 --learn_sigma True --num_channels 256 --num_heads 4 --num_res_blocks 2 --resblock_updown True --use_fp16 True --use_scale_shift_norm True"
+TRAIN_FLAGS="--lr 1e-4 --batch_size 32"
+DIFFUSION_FLAGS="--diffusion_steps 1000 --noise_schedule linear --rescale_learned_sigmas False --rescale_timesteps False"
+```
+
+After the flags are set, insert this terminal command: 
+
+```
+mpiexec -n 2 python ./image_train.py --data_dir ../dataset/sysu_airplanes/ $MODEL_FLAGS $DIFFUSION_FLAGS $TRAIN_FLAGS
+```
+
+## Sampling
+
 
 
 
