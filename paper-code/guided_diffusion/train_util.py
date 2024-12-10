@@ -159,14 +159,14 @@ class TrainLoop:
             self.run_step(batch, cond)
             if self.step % self.log_interval == 0:
                 logger.dumpkvs()
-            if self.step % self.save_interval == 0:
+            if self.step % 500 == 0:
                 self.save()
                 # Run for a finite amount of time in integration tests.
                 if os.environ.get("DIFFUSION_TRAINING_TEST", "") and self.step > 0:
                     return
             self.step += 1
         # Save the last checkpoint if it wasn't already saved.
-        if (self.step - 1) % self.save_interval != 0:
+        if (self.step - 1) % 500 != 0:
             self.save()
 
     def run_step(self, batch, cond):
@@ -273,13 +273,29 @@ def parse_resume_step_from_filename(filename):
 def get_blob_logdir():
     # You can change this to be a separate path to save checkpoints to
     # a blobstore or some external drive.
-    return logger.get_dir()
+    logdir = logger.get_dir()
+    if not logdir:
+        raise ValueError("Logging directory not set. Ensure logger is initialized.")
+    return logdir
 
 
 def find_resume_checkpoint():
     # On your infrastructure, you may want to override this to automatically
     # discover the latest checkpoint on your blob storage, etc.
-    return None
+    logdir = get_blob_logdir()
+    if not logdir or not bf.exists(logdir):
+        return None
+
+    # List all model checkpoint files
+    model_files = [f for f in bf.listdir(logdir) if f.startswith("model") and f.endswith(".pt")]
+
+    if not model_files:
+        return None
+
+    # Sort files by step number (extracted from filename) to find the latest checkpoint
+    model_files.sort(key=parse_resume_step_from_filename)
+    latest_checkpoint = bf.join(logdir, model_files[-1])
+    return latest_checkpoint
 
 
 def find_ema_checkpoint(main_checkpoint, step, rate):
