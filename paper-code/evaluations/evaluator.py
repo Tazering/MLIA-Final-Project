@@ -17,6 +17,9 @@ import tensorflow.compat.v1 as tf
 from scipy import linalg
 from tqdm.auto import tqdm
 
+import tensorflow as tensorflow
+
+
 INCEPTION_V3_URL = "https://openaipublic.blob.core.windows.net/diffusion/jul-2021/ref_batches/classify_image_graph_def.pb"
 INCEPTION_V3_PATH = "classify_image_graph_def.pb"
 
@@ -34,6 +37,20 @@ def main():
         allow_soft_placement=True  # allows DecodeJpeg to run on CPU in Inception graph
     )
     config.gpu_options.allow_growth = True
+
+    # Configure GPU settings
+    gpus = tensorflow.config.list_physical_devices('GPU')
+    if gpus:
+        try:
+            # Enable GPU memory growth
+            for gpu in gpus:
+                tensorflow.config.experimental.set_memory_growth(gpu, True)
+            print(f"Using GPU: {gpus[0]}")
+        except RuntimeError as e:
+            print(f"Error configuring GPUs: {e}")
+    else: 
+        print("No GPUs found. Running on CPU.")
+
     evaluator = Evaluator(tf.Session(config=config))
 
     print("warming up TensorFlow...")
