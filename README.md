@@ -7,12 +7,24 @@ Assume the dataset is saved in the root directory of the Github repository provi
 
 For example, the 64x64 model use only motorbikes images, which can be downloaded here: https://github.com/bearpaw/sysu-shape-dataset/tree/master/motorbike/images 
 
-The location of where you stored the data is important for the   ``` - - data_dir flag, where - - data_dir /path/to/images ``` is sent to the training scripts. 
+The location of where you stored the data is important for the   ``` - - data_dir flag ```, where ```- - data_dir /path/to/images ``` is sent to the training scripts. 
 
 # Setting up
+Before starting make sure you are in the ```/paper_code``` directory of this repository. 
+
 Set up the ``` OPENAI_LOGDIR``` environment variable, where the logging directory has the logs and saved models. To do this, the following command is needed: 
 ``` export OPENAI_LOGDIR=/path/to/location/of/training/logs/folder```
 
+
+## Pre-trained Models
+Note: Within our submission is a ```.zip``` file that includes our pre-trained datasets of: 
+* 64x64 diffusion
+* 64x64 classifier
+* 128x128 diffusion
+* 128x128 classifier
+* LSUN (no classifier guidance)
+
+Unzip and download these files in the ```/our_models``` folder.
 
 # Diffusion Model
 
@@ -165,6 +177,42 @@ python ./image_sample.py --model_path path/to/diffusion/model $MODEL_FLAGS $DIFF
 ```
 
 # Evaluations
+There requirements of the evaluator.py script can be found in requirements.txt. Two arguments are passed in: reference batch and the sample batch. 
+These batches are stored in the ```/training_logs``` folder. 
+
+To evaluate, run the command 
+
+```
+python evaluations/evaluator.py training_logs/[reference_batch].npz training_logs/[sample_batch].npz
+```
+
+The following ```.npz``` files are reference batches: 
+* ```reference_batch_64x64.npz```
+* ```sample_batch.npz```
+* ```airplanes_batch.npz```
+
+
+The following ```.npz``` files are sample patches: 
+* ```diffusion64_samples_200x64x64x3.npz```
+* ```classifier64_samples_200x64x64x3.npz```
+* ```diffusion_class_cond_no_guidance.npz```
+* ```diffusion_class_cond_guidance.npz```
+* ```LSUN_airplane_20000.npz```
+
+To evaluate the 64x64 model, use the reference batch ```reference_batch_64x64.npz```. For the sample batch use: 
+* ```diffusion64_samples_200x64x64x3.npz``` (diffusion)
+* ```classifier64_samples_200x64x64x3.npz``` (classifier)
+  
+To evaluate the 128x128 model, use the reference batch ```sample_batch.npz```. For the sample batch use: 
+* ```diffusion_class_cond_no_guidance.npz``` (diffusion)
+* ```diffusion_class_cond_guidance.npz``` (classifier)
+
+To evaluate the 128x128 LSUN, use the reference batch ```airplanes_batch.npz```. For the sample batch use: ```LSUN_airplane_20000.npz```. 
+
+  
+
+  
+
 
 
  
