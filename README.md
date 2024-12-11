@@ -17,7 +17,7 @@ Set up the ``` OPENAI_LOGDIR``` environment variable, where the logging director
 
 
 ## Pre-trained Models
-Note: Open up this Google Drive to access the pre-trained models for: 
+Note: Open up this Google Drive [https://drive.google.com/drive/folders/1w2ChLLpXP7RsLk5bmOS0ul4Rh6qlwCkF?usp=drive_link] to access the pre-trained models for: 
 * 64x64 diffusion
 * 64x64 classifier
 * 128x128 diffusion
