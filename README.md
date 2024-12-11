@@ -17,14 +17,14 @@ Set up the ``` OPENAI_LOGDIR``` environment variable, where the logging director
 
 
 ## Pre-trained Models
-Note: Within our submission is a ```.zip``` file that includes our pre-trained datasets of: 
+Note: Open up this Google Drive to access the pre-trained models for: 
 * 64x64 diffusion
 * 64x64 classifier
 * 128x128 diffusion
 * 128x128 classifier
 * LSUN (no classifier guidance)
 
-Unzip and download these files in the ```/our_models``` folder.
+Download each of these ```.pt``` files in the ```/our_models``` folder.
 
 # Diffusion Model
 
