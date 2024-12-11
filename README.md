@@ -177,7 +177,7 @@ python ./image_sample.py --model_path path/to/diffusion/model $MODEL_FLAGS $DIFF
 ```
 
 # Evaluations
-There requirements of the evaluator.py script can be found in requirements.txt. Two arguments are passed in: reference batch and the sample batch. 
+The requirements of the evaluator.py script can be found in requirements.txt. Two arguments are passed in: reference batch and the sample batch. 
 These batches are stored in the ```/training_logs``` folder. 
 
 To evaluate, run the command 
@@ -192,7 +192,7 @@ The following ```.npz``` files are reference batches:
 * ```airplanes_batch.npz```
 
 
-The following ```.npz``` files are sample patches: 
+The following ```.npz``` files are sample batches: 
 * ```diffusion64_samples_200x64x64x3.npz```
 * ```classifier64_samples_200x64x64x3.npz```
 * ```diffusion_class_cond_no_guidance.npz```
