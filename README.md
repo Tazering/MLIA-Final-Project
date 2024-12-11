@@ -1,17 +1,5 @@
 # ***MLIA-Final-Project***
 
-## **Setting Up on Rivanna**
-
-1. Type `module load anaconda`
-2. Create a python environment: `conda create -n "<name of your environment>" python=3.9"`
-3. Activate Environment: `conda activate <name of your environment>` OR `source activate <name of your environment>`
-4. install required libraries
-   1. `pip install matplotlib`
-   2. `pip install pandas`
-   3. `pip install torch`
-   4. `pip install torchvision`
-   5. `pip install torchsummary`
-
 # **Dataset That needs to be Used**
 
 Used Dataset: SYSU-Shape Dataset
@@ -44,7 +32,7 @@ NUM_GPUS="2"
 Once the hyperparameters are set, you can run the terminal command: 
 
 ```
-mpiexec -n $NUM_GPUS python scripts/image_train.py --data_dir sysu-shape-dataset/motorbike/images $MODEL_FLAGS $DIFFUSION_FLAGS $TRAIN_FLAGS
+mpiexec -n $NUM_GPUS python scripts/image_train.py --data_dir path/to/datasets/sysu-shape-dataset/motorbike/images $MODEL_FLAGS $DIFFUSION_FLAGS $TRAIN_FLAGS
 ```
 
 * 128x128 Model
@@ -58,7 +46,7 @@ TRAIN_FLAGS="--lr .0005 --batch_size 32"
 Once the hyperparameters are set, you can run the terminal command: 
 
 ```
-mpiexec -n 2 python ./image_train.py --data_dir ../dataset/sysu_dataset_diffusion/ $MODEL_FLAGS $DIFFUSION_FLAGS $TRAIN_FLAGS --resume_checkpoint ./checkpoints_and_results/ema_checkpoint_2.pt
+mpiexec -n 2 python ./image_train.py --data_dir path/to/dataset/sysu_dataset_diffusion/ $MODEL_FLAGS $DIFFUSION_FLAGS $TRAIN_FLAGS
 ```
 ## Sampling
 
@@ -102,7 +90,7 @@ Where batch size in TRAIN_FLAGS is divided by the number of MPI processes you ar
 Once the parameters are set, you can run the terminal command: 
 
 ```
-mpiexec -n N python scripts/classifier_train.py --data_dir sysu-shape-dataset/motorbike/images $TRAIN_FLAGS $CLASSIFIER_FLAGS
+mpiexec -n N python scripts/classifier_train.py --data_dir path/to/dataset/sysu-shape-dataset/motorbike/images $TRAIN_FLAGS $CLASSIFIER_FLAGS
 ```
 * 128x128 Model
   
@@ -129,7 +117,7 @@ CLASSIFIER_FLAGS="--image_size 64 --classifier_attention_resolutions 32,16,8 --c
 After the flags are set, insert this terminal command: 
 
 ```
-python classifier_sample.py $MODEL_FLAGS --classifier_path our_models/64x64_classifier.pt --model_path our_models/64x64_diffusion.pt 
+python classifier_sample.py $MODEL_FLAGS --classifier_path path/to/64x64/classifier/model --model_path path/to/saved/diffusion/model 
 $SAMPLE_FLAGS $MODEL_FLAGS $CLASSIFIER_FLAGS
 ```
 
@@ -167,37 +155,13 @@ DIFFUSION_FLAGS="--diffusion_steps 1000 --noise_schedule linear --rescale_learne
 After the flags are set, insert this terminal command: 
 
 ```
-mpiexec -n 2 python ./image_train.py --data_dir ../dataset/sysu_airplanes/ $MODEL_FLAGS $DIFFUSION_FLAGS $TRAIN_FLAGS
+mpiexec -n 2 python ./image_train.py --data_dir path/to/dataset/sysu_airplanes/ $MODEL_FLAGS $DIFFUSION_FLAGS $TRAIN_FLAGS
 ```
 
 ## Sampling
 
 ```
-python ./image_sample.py --model_path checkpoints_and_results/diffusion_class_cond.pt $MODEL_FLAGS $DIFFUSION_FLAGS
-```
-
-## Classifier Guidance
-
-* Training
-  
-Set the hyperparameters: 
-```
-TRAIN_FLAGS="--iterations 700000 --anneal_lr True --batch_size 32 --lr 1e-4 --save_interval 500 --weight_decay 0.05"
-CLASSIFIER_FLAGS="--image_size 128 --classifier_attention_resolutions 32,16,8 --classifier_depth 2 --classifier_width 128 --classifier_pool attention --classifier_resblock_updown True --classifier_use_scale_shift_norm True --classifier_use_fp16 True"
-```
-
-After the flags are set, insert this terminal command: 
-
-```
-mpiexec -n 2 python ./classifier_train.py --data_dir ../dataset/sysu_airplanes/ $TRAIN_FLAGS $CLASSIFIER_FLAGS
-```
-
-* Sampling
-
-Run this terminal command 
-
-```
-mpiexec -n 2 python ./classifier_sample.py --model_path /path/to/model.pt --classifier_path path/to/classifier.pt $MODEL_FLAGS $CLASSIFIER_FLAGS $SAMPLE_FLAGS
+python ./image_sample.py --model_path path/to/diffusion/model $MODEL_FLAGS $DIFFUSION_FLAGS
 ```
 
 # Evaluations
