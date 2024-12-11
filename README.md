@@ -81,7 +81,7 @@ python scripts/image_sample.py --model_path /path/to/saved/models/64x64_diffusio
 Run the terminal command: 
 
 ```
-python ./image_sample.py --model_path checkpoints_and_results/diffusion_class_cond.pt $MODEL_FLAGS $DIFFUSION_FLAGS
+python ./image_sample.py --model_path path/to/128x128/model $MODEL_FLAGS $DIFFUSION_FLAGS
 ```
 
 # Classifier Guidance
